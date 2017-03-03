@@ -7,7 +7,7 @@
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
     line: "         --bip=10.195.0.1/23 \\"
-    regexp: "         --bip="
+    regexp: "--bip="
     insertafter: ExecStart
   notify: 
     - restart docker daemon

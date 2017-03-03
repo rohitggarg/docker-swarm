@@ -1,0 +1,25 @@
+- name: enable docker connection port in firewall
+  iptables:
+    chain: INPUT
+    protocol: "{{ item }}"
+    jump: ACCEPT
+    destination_port: "2375"
+    comment: connection port for docker
+  items:
+    - tcp
+
+- name: change bip configuration
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    line: "        -H=0.0.0.0:2375 \\"
+    regexp: "-H="
+    insertafter: ExecStart
+  notify: 
+    - restart docker daemon
+
+- name: add setting for remote connect to bashrc
+  lineinfile:
+    dest: /etc/environment
+    line: "export DOCKER_HOST=tcp://localhost:2375"
+    regexp: DOCKER_HOST
+    create: yes

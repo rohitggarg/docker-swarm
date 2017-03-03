@@ -1,4 +1,10 @@
 ---
+- hosts: 
+    - bootstrap
+    - masters
+  roles:
+    - docker-remote-connect
+
 - hosts: all
   roles:
     - role: docker-photon-config
@@ -6,7 +12,7 @@
   post_tasks:
     - name: ensure docker daemon started
       systemd: state=started name=docker
-
+  
 - hosts: bootstrap
   roles:
     - role: docker-swarm-bootstrap
