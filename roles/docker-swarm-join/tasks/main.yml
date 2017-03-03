@@ -1,0 +1,12 @@
+- name: leave swarm mode
+  command: "docker swarm leave --force"
+  when: "swarm_leave == true"
+  ignore_errors: yes
+- name: check swarm state
+  shell: docker info | grep Swarm
+  register: swarm_state
+- name: print the current state of swarm
+  debug: msg="{{ swarm_state.stdout }}"
+- name: join swarm
+  command: "docker swarm join --token {{ swarm_token }} {{ swarm_master }}:{{ swarm_port }}"
+  when: "swarm_state.stdout.find('Swarm: active') == -1"

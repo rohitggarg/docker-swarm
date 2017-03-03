@@ -1,0 +1,32 @@
+---
+- hosts: all
+  roles:
+    - role: docker-photon-config
+      when: ansible_lsb.codename == 'Photon'
+  post_tasks:
+    - name: ensure docker daemon started
+      systemd: state=started name=docker
+
+- hosts: bootstrap
+  roles:
+    - role: docker-swarm-bootstrap
+      register: tokens
+  tasks:
+    - name: set tokens as facts
+      set_fact:
+        "token_{{ item.item }}": "{{ item.stdout }}"
+      with_items: "{{ tokens.results }}"
+
+- hosts: 
+    - masters
+    - nodes
+  vars:
+    token_mapping:
+      masters: manager
+      nodes: worker
+    token_key: "token_{{ token_mapping[group_names[0]] }}"
+  roles:
+    - role: docker-swarm-join
+      vars:
+        swarm_token: "{{ hostvars[groups['bootstrap'][0]][token_key] }}"
+        swarm_master: "{{ hostvars[groups['bootstrap'][0]]['ansible_ipv4']['address'] }}"

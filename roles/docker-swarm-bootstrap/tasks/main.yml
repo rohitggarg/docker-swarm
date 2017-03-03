@@ -1,0 +1,12 @@
+- name: check swarm state
+  shell: docker info | grep Swarm
+  register: swarm_state
+- name: init swarm mode
+  command: "docker swarm init --advertise-addr {{ ansible_ipv4.address }}:{{ swarm_port }} --listen-addr {{ ansible_ipv4.address }}:{{ swarm_port }}"
+  when: "swarm_state.stdout == 'Swarm: inactive'"
+- name: get join tokens
+  command: "docker swarm join-token {{ item }} -q"
+  with_items:
+    - worker
+    - manager
+  register: tokens

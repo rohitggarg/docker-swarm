@@ -1,0 +1,47 @@
+- name: update docker
+  command: 'tdnf upgrade -y docker'
+- name: set netmask fact
+  set_fact:
+    network: "{{ ansible_ipv4.network }}/{{ ansible_ipv4.netmask }}"
+- name: change bip configuration
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    line: "         --bip=10.195.0.1/23 \\"
+    regexp: "         --bip="
+    insertafter: ExecStart
+  notify: 
+    - restart docker daemon
+- name: set hostname of the machine
+  lineinfile:
+    dest: /etc/hostname
+    line: "{{ inventory_hostname_short }}"
+    regexp: '.*'
+  notify:
+    - restart docker daemon
+- name: iptables rule for swarm connection swarm port
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    source: "{{ network | ipaddr('net') }}"
+    destination_port: "{{ swarm_port }}"
+    comment: Swarm cluster management communications
+- name: iptables rule for swarm connection nodes and masters
+  iptables:
+    chain: INPUT
+    protocol: "{{ item }}"
+    jump: ACCEPT
+    source: "{{ network | ipaddr('net') }}"
+    destination_port: "7946"
+    comment: Swarm communication among nodes and masters
+  items:
+    - tcp
+    - udp
+- name: iptables rule for swarm connection overlay traffic
+  iptables:
+    chain: INPUT
+    protocol: udp
+    jump: ACCEPT
+    source: "{{ network | ipaddr('net') }}"
+    destination_port: "4789"
+    comment: Swarm overlay network traffic

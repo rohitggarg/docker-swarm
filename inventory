@@ -1,0 +1,6 @@
+[bootstrap]
+192.168.99.20 vagrant_mc_name=bootstrap
+[masters]
+192.168.99.21 vagrant_mc_name=master
+[nodes]
+192.168.99.22 vagrant_mc_name=node

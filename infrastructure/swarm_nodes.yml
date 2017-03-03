@@ -1,0 +1,26 @@
+---
+- hosts: all
+  connection: local
+  vars:
+    - guest: "{{ inventory_hostname_short }}"
+      dnsrecord: "{{ inventory_hostname_short }}"
+  roles:
+    - role: vmware-vm-create
+    - role: vmware-vm-modify
+      register: output
+    - role: ms-dnscreate-ar
+      vars:
+        ip: "{{ output.ansible_facts.hw_eth0.ipaddresses[0] }}" 
+  # tasks:
+  #   - name: Pause for 15 minutes to reflect to other DNS servers
+  #     pause:
+  #       minutes: 15
+  #   - name: change default password
+  #     expect:
+  #       command: "ssh -o StrictHostKeyChecking=no {{ inventory_hostname }}"
+  #       responses:
+  #         Password: changeme
+  #         current: changeme
+  #         New: "{{ ansible_ssh_pass }}"
+  #         Retype: "{{ ansible_ssh_pass }}"
+  #     ignore_errors: yes

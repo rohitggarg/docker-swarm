@@ -1,0 +1,2 @@
+swarm_port: 2377
+ansible_ipv4: "{{ ansible_default_ipv4 }}"

@@ -1,0 +1,8 @@
+- hosts: all
+  connection: local
+  vars:
+    - guest: "{{ inventory_hostname_short }}"
+      dnsrecord: "{{ inventory_hostname_short }}"
+  roles:
+    - role: vmware-vm-remove
+    - role: ms-dns-remove
