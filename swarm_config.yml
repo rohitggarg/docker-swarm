@@ -3,7 +3,8 @@
     - bootstrap
     - masters
   roles:
-    - docker-remote-connect
+    - role: docker-remote-connect
+      when: ansible_lsb.codename == 'Photon'
 
 - hosts: all
   roles:
