@@ -8,7 +8,7 @@
   items:
     - tcp
 
-- name: change bip configuration
+- name: add remote connect configuration
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
     line: "        -H=0.0.0.0:2375 \\"
