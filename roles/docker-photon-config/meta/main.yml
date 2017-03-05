@@ -1,0 +1,29 @@
+galaxy_info:
+  author: Rohit Garg
+  description: Consultant
+
+  license: license (GPLv2, CC-BY, etc)
+
+  min_ansible_version: 2.0
+
+  #
+  # Below are all platforms currently available. Just uncomment
+  # the ones that apply to your role. If you don't see your
+  # platform on this list, let us know and we'll get it added!
+  #
+  platforms:
+    - name: PhotonOS
+      versions:
+        - all
+
+  galaxy_tags:
+    - docker
+    - photon
+    - base
+    - configuration
+    - swarm
+
+dependencies: []
+  # List your role dependencies here, one per line.
+  # Be sure to remove the '[]' above if you add dependencies
+  # to this list.
