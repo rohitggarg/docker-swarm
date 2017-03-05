@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Rohit Garg
+  description: Ansible Docker Swarm Creation
+
+  # Some suggested licenses:
+  # - BSD (default)
+  # - MIT
+  # - GPLv2
+  # - GPLv3
+  # - Apache
+  # - CC-BY
+  license: BSD
+
+  tags:
+  - docker
+  - swarm
+  - photon

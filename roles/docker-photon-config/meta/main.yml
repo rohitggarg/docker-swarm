@@ -17,11 +17,8 @@ galaxy_info:
         - all
 
   galaxy_tags:
-    - docker
-    - photon
     - base
     - configuration
-    - swarm
 
 dependencies: []
   # List your role dependencies here, one per line.
