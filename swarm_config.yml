@@ -1,11 +1,4 @@
 ---
-- hosts: 
-    - bootstrap
-    - masters
-  roles:
-    - role: docker-remote-connect
-      when: ansible_lsb.codename == 'Photon'
-
 - hosts: all
   roles:
     - role: docker-photon-config
@@ -13,6 +6,13 @@
   post_tasks:
     - name: ensure docker daemon started
       systemd: state=started name=docker
+
+- hosts: 
+    - bootstrap
+    - masters
+  roles:
+    - role: docker-remote-connect
+      when: ansible_lsb.codename == 'Photon'
   
 - hosts: bootstrap
   roles:
