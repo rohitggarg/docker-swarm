@@ -24,7 +24,7 @@ docker run -it -w /ansible/work/infrastructure \
 -v `pwd`:/ansible/work \
 -v `pwd`/vmware_vars:/ansible/roles/vmware-vm-create/vars \
 -v `pwd`/vmware_vars:/ansible/roles/vmware-vm-modify/vars \
-registry.mckinsey.com/mck/ansible-deployer \
+deployer \
 ansible-playbook -e@vsphere.yml swarm_nodes.yml
 ```
 
@@ -40,6 +40,6 @@ execute docker command
 docker run -it -w /ansible/work/infrastructure \
 -v `pwd`:/ansible/work \
 -v `pwd`/vmware_vars:/ansible/roles/vmware-vm-remove/vars \
-registry.mckinsey.com/mck/ansible-deployer \
+deployer \
 ansible-playbook -e@vsphere.yml cleanup_swarm.yml
 ```
