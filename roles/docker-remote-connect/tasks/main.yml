@@ -17,9 +17,16 @@
   notify: 
     - restart docker daemon
 
-- name: add setting for remote connect to bashrc
+- name: add setting for remote connect to environment
   lineinfile:
     dest: /etc/environment
+    line: "export DOCKER_HOST=tcp://localhost:2375"
+    regexp: DOCKER_HOST
+    create: yes
+
+- name: add setting for remote connect to bashrc
+  lineinfile:
+    dest: ~/.bashrc
     line: "export DOCKER_HOST=tcp://localhost:2375"
     regexp: DOCKER_HOST
     create: yes
