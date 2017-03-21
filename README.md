@@ -14,4 +14,4 @@ execute ansible command
 ansible-playbook -e@vagrant.yml swarm_config.yml
 ```
 
-![Swarm](https://ozyfaq-dm2305.files.1drv.com/y3phWOpIA9MWL40Yi3xyDvaK6YBnpmJ_L1vv4P5HujRpfHtIIZI3T21JzRQkIxJrNZtU1xR_B6nQ3FygdemLsoppthpXkYbWjc7-2Fj2D25vhM2N6HNTADxYfDpiGm9_f_GHKEuHyKb6sREDWx6g0uGEg/Virtual%20Box.png?psid=1)
+![Swarm](https://mjzocw-dm2305.files.1drv.com/y3mvx71ilq0g0GmYoNb09Er-ybT4IwWZrtPRbfOIpd9q_91cdO67W-2xwZOOl5qwkWdDnrkSE6aid-bkvOfpLmYr30SRC2YFja3aPtLnrpvFOyrNco7wUXU7hwWTMD44JqtGWbgpDWqXZN8Is27o52RbGrX8orFWtMnWPIhVh5_0xk)
