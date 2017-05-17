@@ -1,4 +1,5 @@
 infrastructure
+docker-certs
 .DS_Store
 vault-key
 .vagrant
