@@ -1,0 +1,2 @@
+docker_connect_secure: no
+docker_connect_certs_path: ~/.docker

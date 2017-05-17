@@ -10,6 +10,9 @@
 - hosts: 
     - bootstrap
     - masters
+  vars:
+#    docker_connect_secure: yes
+#    docker_connect_certs_path: ./docker-certs
   roles:
     - role: docker-remote-connect
       when: ansible_lsb.codename == 'Photon'

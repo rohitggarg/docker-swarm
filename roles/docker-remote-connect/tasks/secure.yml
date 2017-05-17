@@ -1,0 +1,53 @@
+- name: create .docker directory
+  file:
+    path: /root/.docker
+    state: directory
+- name: copy local secure certificates to server
+  copy:
+    src: "{{ docker_connect_certs_path }}/{{ item }}"
+    dest: "/root/.docker/{{ item }}"
+  with_items:
+    - ca.pem
+    - server-cert.pem
+    - server-key.pem
+    - cert.pem
+    - key.pem
+
+- name: enable docker connection port in firewall
+  iptables:
+    chain: INPUT
+    protocol: "{{ item }}"
+    jump: ACCEPT
+    destination_port: "2376"
+    comment: connection port for docker
+  items:
+    - tcp
+
+- name: add remote connect configuration
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    line: "        --tlsverify --tlscacert=/root/.docker/ca.pem --tlscert=/root/.docker/server-cert.pem --tlskey=/root/.docker/server-key.pem -H=0.0.0.0:2376 \\"
+    regexp: "-H="
+    insertafter: ExecStart
+  notify: 
+    - restart docker daemon
+
+- name: add setting for remote connect to shell
+  lineinfile:
+    dest: "{{ item }}"
+    line: "export DOCKER_HOST=tcp://localhost:2376"
+    regexp: DOCKER_HOST
+    create: yes
+  with_items:
+    - /etc/environment
+    - ~/.bashrc
+
+- name: add setting for tls verify to shell
+  lineinfile:
+    dest: "{{ item }}"
+    line: "export DOCKER_TLS_VERIFY=1"
+    regexp: DOCKER_TLS_VERIFY
+    create: yes
+  with_items:
+    - /etc/environment
+    - ~/.bashrc
