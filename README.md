@@ -19,6 +19,12 @@ execute ansible command
 ansible-playbook -e@vagrant.yml swarm_config.yml
 ```
 
+for checking the swarm
+```shell
+docker -H 192.168.99.20 service ls
+docker -H 192.168.99.21 service ls
+```
+
 Secure TLS setup
 ====
 
@@ -40,4 +46,10 @@ enable the values inside swarm_config.yml
 execute ansible command
 ```shell
 ansible-playbook -e@vagrant.yml swarm_config.yml
+```
+
+for checking the swarm
+```shell
+docker --tlsverify --tlscacert ./docker-certs/ca.pem --tlscert ./docker-certs/cert.pem --tlskey ./docker-certs/key.pem -H 192.168.99.20:2376 service ls
+docker --tlsverify --tlscacert ./docker-certs/ca.pem --tlscert ./docker-certs/cert.pem --tlskey ./docker-certs/key.pem -H 192.168.99.21:2376 service ls
 ```
