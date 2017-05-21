@@ -2,16 +2,25 @@
   file:
     path: /root/.docker
     state: directory
-- name: copy local secure certificates to server
+
+- name: copy ca and client secure certificates
   copy:
     src: "{{ docker_connect_certs_path }}/{{ item }}"
     dest: "/root/.docker/{{ item }}"
   with_items:
     - ca.pem
-    - server-cert.pem
-    - server-key.pem
     - cert.pem
     - key.pem
+  notify: restart docker daemon
+
+- name: copy server secure certificates
+  copy:
+    src: "{{ docker_connect_certs_path }}/{{ inventory_hostname }}/{{ item }}"
+    dest: "/root/.docker/{{ item }}"
+  with_items:
+    - server-cert.pem
+    - server-key.pem
+  notify: restart docker daemon
 
 - name: enable docker connection port in firewall
   iptables:
@@ -35,7 +44,7 @@
 - name: add setting for remote connect to shell
   lineinfile:
     dest: "{{ item }}"
-    line: "export DOCKER_HOST=tcp://localhost:2376"
+    line: "export DOCKER_HOST=tcp://{{ inventory_hostname }}:2376"
     regexp: DOCKER_HOST
     create: yes
   with_items:

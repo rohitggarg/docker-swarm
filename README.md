@@ -9,9 +9,35 @@ create vault key
 touch vault-key
 ```
 
+![Swarm](https://mjzocw-dm2305.files.1drv.com/y3mvx71ilq0g0GmYoNb09Er-ybT4IwWZrtPRbfOIpd9q_91cdO67W-2xwZOOl5qwkWdDnrkSE6aid-bkvOfpLmYr30SRC2YFja3aPtLnrpvFOyrNco7wUXU7hwWTMD44JqtGWbgpDWqXZN8Is27o52RbGrX8orFWtMnWPIhVh5_0xk)
+
+Insecure Setup
+====
+
 execute ansible command
 ```shell
 ansible-playbook -e@vagrant.yml swarm_config.yml
 ```
 
-![Swarm](https://mjzocw-dm2305.files.1drv.com/y3mvx71ilq0g0GmYoNb09Er-ybT4IwWZrtPRbfOIpd9q_91cdO67W-2xwZOOl5qwkWdDnrkSE6aid-bkvOfpLmYr30SRC2YFja3aPtLnrpvFOyrNco7wUXU7hwWTMD44JqtGWbgpDWqXZN8Is27o52RbGrX8orFWtMnWPIhVh5_0xk)
+Secure TLS setup
+====
+
+```shell
+./certs.sh
+```
+
+```shell
+./server_certs.sh 192.168.99.20 192.168.99.20
+./server_certs.sh 192.168.99.21 192.168.99.21
+```
+
+enable the values inside swarm_config.yml
+```yml
+    docker_connect_secure: yes
+    docker_connect_certs_path: ./docker-certs
+```
+
+execute ansible command
+```shell
+ansible-playbook -e@vagrant.yml swarm_config.yml
+```
