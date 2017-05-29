@@ -27,6 +27,36 @@ docker -H 192.168.99.21 service ls
 
 Secure TLS setup
 ====
+enable docker_connect_secure in vagrant.yml
+```yml
+    docker_connect_secure: yes
+```
+
+decide where would you want to keep CA cert+key by editing swarm_config.yml for localhost or bootstrap
+```yml
+- hosts: localhost
+  vars:
+    vagrant_mc_name: ignored
+    ansible_sudo_pass: password of localhost
+  roles:
+    - role: docker-ca
+      when: docker_connect_secure
+```
+
+execute ansible command
+```shell
+ansible-playbook -e@vagrant.yml swarm_config.yml
+```
+
+external connections are not allowed right now, one has to login to the bootstrap machine to see the swarm state
+
+```shell
+vagrant ssh bootstrap
+docker service ls
+```
+
+Secure TLS setup - Old Way
+====
 
 ```shell
 ./certs.sh
