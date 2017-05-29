@@ -11,7 +11,7 @@
 - name: add remote connect configuration
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
-    line: "        --tlsverify --tlscacert=/root/.docker/ca.pem --tlscert=/root/.docker/server-cert.pem --tlskey=/root/.docker/server-key.pem -H=0.0.0.0:2376 \\"
+    line: "        --tlsverify --tlscacert={{ docker_connect_certs_path }}/ca.pem --tlscert={{ docker_connect_certs_path }}/server-cert.pem --tlskey={{ docker_connect_certs_path }}/server-key.pem -H=0.0.0.0:2376 \\"
     regexp: "-H="
     insertafter: ExecStart
   notify: 
@@ -20,7 +20,7 @@
 - name: add setting for remote connect to shell
   lineinfile:
     dest: "{{ item }}"
-    line: "export DOCKER_HOST=tcp://{{ inventory_hostname }}:2376"
+    line: "export DOCKER_HOST=tcp://127.0.0.1:2376"
     regexp: DOCKER_HOST
     create: yes
   with_items:

@@ -15,11 +15,18 @@
 - name: create client extfile
   lineinfile:
     path: "{{ docker_ca_certs_path }}/client_extfile.cnf"
-    line: "echo extendedKeyUsage = clientAuth"
+    line: "extendedKeyUsage = clientAuth"
+    regexp: .*
     create: yes
 
 - name: generate san file for server
   lineinfile:
     path: "{{ docker_ca_certs_path }}/server_extfile.cnf"
-    line: "echo subjectAltName = IP:localhost,IP:127.0.0.1"
+    line: "subjectAltName = DNS:localhost,IP:127.0.0.1"
+    regexp: .*
     create: yes
+
+- name: fetch ca from remote
+  fetch: 
+    src: "{{ docker_ca_certs_path }}/ca.pem"
+    dest: "{{ docker_ca_certs_path }}"

@@ -1,2 +1,0 @@
-docker_connect_certs_path: ~/.docker
-docker_ca_certs_path: docker-certs

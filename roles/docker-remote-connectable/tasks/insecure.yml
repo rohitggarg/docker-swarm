@@ -20,7 +20,7 @@
 - name: add setting for remote connect to shell
   lineinfile:
     dest: "{{ item }}"
-    line: "export DOCKER_HOST=tcp://localhost:2375"
+    line: "export DOCKER_HOST=tcp://127.0.0.1:2375"
     regexp: DOCKER_HOST
     create: yes
   with_items:
