@@ -1,0 +1,25 @@
+- name: create directory for ca
+  file:
+    path: "{{ docker_ca_certs_path }}"
+    state: directory
+
+- name: generate ca key
+  command: "openssl genrsa -out {{ docker_ca_certs_path }}/ca-key.pem 4096"
+  # notify: encrypt the key
+  register: output
+
+- name: generate x509 for the key
+  command: "openssl req -new -x509 -days 365 -key {{ docker_ca_certs_path }}/ca-key.pem -sha256 -out {{ docker_ca_certs_path }}/ca.pem -subj '/C={{ docker_ca_country }}/ST={{ docker_ca_state }}>/L={{ docker_ca_locality }}/O={{ docker_ca_org }}/CN={{ docker_ca_cn }}'"
+  when: output.changed
+
+- name: create client extfile
+  lineinfile:
+    path: "{{ docker_ca_certs_path }}/client_extfile.cnf"
+    line: "echo extendedKeyUsage = clientAuth"
+    create: yes
+
+- name: generate san file for server
+  lineinfile:
+    path: "{{ docker_ca_certs_path }}/server_extfile.cnf"
+    line: "echo subjectAltName = IP:localhost,IP:127.0.0.1"
+    create: yes

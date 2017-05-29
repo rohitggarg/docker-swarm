@@ -1,19 +1,26 @@
 ---
-- hosts: all
-  roles:
-    - role: docker-photon-config
-      when: ansible_lsb.codename == 'Photon'
-  post_tasks:
-    - name: ensure docker daemon started
-      systemd: state=started name=docker
+# - hosts: all
+#   roles:
+#     - role: docker-photon-config
+#       when: ansible_lsb.codename == 'Photon'
+#   post_tasks:
+#     - name: ensure docker daemon started
+#       systemd: state=started name=docker
+
+# - hosts: bootstrap
+#   roles:
+#     - role: docker-ca
+#       when: docker_connect_secure
 
 - hosts: 
     - bootstrap
     - masters
-  vars:
-    # docker_connect_secure: yes
-    # docker_connect_certs_path: ./docker-certs
   roles:
+    # - role: docker-remote-csr
+    #   when: docker_connect_secure
+    - role: docker-cert-signer
+      when: docker_connect_secure
+      delegate_to: bootstrap
     - role: docker-remote-connect
       when: ansible_lsb.codename == 'Photon'
   

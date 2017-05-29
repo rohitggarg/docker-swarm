@@ -1,0 +1,2 @@
+# - name: encrypt the key
+#   command: "ansible-vault encrypt {{ docker_ca_certs_path }}/ca-key.pem"

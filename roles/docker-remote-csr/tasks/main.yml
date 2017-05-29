@@ -1,0 +1,10 @@
+- name: create certs directory
+  file:
+    path: "{{ docker_connect_certs_path }}"
+    state: directory
+
+- name: generate csr on server
+  command: "openssl req -subj '/CN={{ inventory_hostname }}' -sha256 -new -key {{ docker_connect_certs_path }}/server-key.pem -out {{ docker_connect_certs_path }}/server.csr"
+
+- name: generate local client csr on server
+  command: "openssl req -subj '/CN=localhost' -sha256 -new -key {{ docker_connect_certs_path }}/key.pem -out {{ docker_connect_certs_path }}/client.csr"

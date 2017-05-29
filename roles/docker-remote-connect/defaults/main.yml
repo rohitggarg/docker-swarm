@@ -1,2 +1,3 @@
 docker_connect_secure: no
+docker_ca_certs_path: docker-certs
 docker_connect_certs_path: ~/.docker

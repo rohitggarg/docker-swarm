@@ -1,0 +1,37 @@
+- name: fetch csr from remote
+  fetch:
+    src: "{{ docker_connect_certs_path }}/{{ item }}.csr"
+    dest: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr"
+  with_items:
+    - client
+    - server
+
+- name: sign server csr with ca
+  local_action:
+    command: "openssl x509 -req -days 365 -sha256 -in {{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr -CA {{ docker_ca_certs_path }}/ca.pem -CAkey {{ docker_ca_certs_path }}/ca-key.pem -CAcreateserial -out {{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}-cert.pem -extfile {{ item }}_extfile.cnf"
+  with_items:
+    - client
+    - server
+
+- name: remove csr file
+  local_action:
+    file: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr"
+    state: absent
+  with_items:
+    - client
+    - server
+
+- name: copy ca to server
+  copy:
+    src: "{{ docker_ca_certs_path }}/ca.pem"
+    dest: "{{ docker_connect_certs_path }}/ca.pem"
+
+- name: copy server certificate
+  copy:
+    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-server-cert.pem"
+    dest: "{{ docker_connect_certs_path }}/server-cert.pem"
+
+- name: copy client certificate
+  copy:
+    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-client-cert.pem"
+    dest: "{{ docker_connect_certs_path }}/cert.pem"
