@@ -27,8 +27,17 @@
         docker_ca_host: "{{ groups['bootstrap'][0] }}" # or localhost
       when: docker_connect_secure
     - role: docker-remote-connectable
-      when: ansible_lsb.codename == 'Photon'
-  
+
+- hosts: all
+  tasks:
+    - name: fetch id of docker_gwbridge
+      command: docker network ls -f name=docker_gwbridge -q
+      changed_when: no
+      register: bridge_details
+    - name: create docker_gwbridge network
+      command: "docker network create --subnet=10.196.0.0/23 --gateway=10.196.0.1 -o com.docker.network.bridge.enable_icc=false -o com.docker.network.bridge.enable_ip_masquerade=true -o com.docker.network.bridge.name=docker1 docker_gwbridge"
+      when: bridge_details.stdout == ''
+
 - hosts: bootstrap
   roles:
     - role: docker-swarm-bootstrap
