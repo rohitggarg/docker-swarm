@@ -35,7 +35,7 @@
       changed_when: no
       register: bridge_details
     - name: create docker_gwbridge network
-      command: "docker network create --subnet=10.196.0.0/23 --gateway=10.196.0.1 -o com.docker.network.bridge.enable_icc=false -o com.docker.network.bridge.enable_ip_masquerade=true -o com.docker.network.bridge.name=docker1 docker_gwbridge"
+      command: "docker network create --subnet=10.196.0.0/23 --gateway=10.196.0.1 -o com.docker.network.bridge.enable_icc=false -o com.docker.network.bridge.enable_ip_masquerade=true -o com.docker.network.bridge.name=docker_gwbridge docker_gwbridge"
       when: bridge_details.stdout == ''
 
 - hosts: bootstrap

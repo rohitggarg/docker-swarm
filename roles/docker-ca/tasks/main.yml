@@ -22,7 +22,7 @@
 - name: generate san file for server
   lineinfile:
     path: "{{ docker_ca_certs_path }}/server_extfile.cnf"
-    line: "subjectAltName = DNS:localhost,IP:127.0.0.1"
+    line: "subjectAltName = DNS:localhost,IP:{{ docker_photon_bip }},IP:127.0.0.1"
     regexp: .*
     create: yes
 

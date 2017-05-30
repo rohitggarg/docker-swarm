@@ -6,7 +6,7 @@
 - name: change bip configuration
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
-    line: "         --bip=10.195.0.1/23 \\"
+    line: "         --bip={{ docker_photon_bip }}/23 \\"
     regexp: "--bip="
     insertafter: ExecStart
   notify: 
@@ -45,3 +45,11 @@
     source: "{{ network | ipaddr('net') }}"
     destination_port: "4789"
     comment: Swarm overlay network traffic
+
+- name: iptables rule for portainer
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "9000"
+    comment: portainer traffic

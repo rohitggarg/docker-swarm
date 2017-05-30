@@ -1,1 +1,2 @@
 docker_ca_certs_path: docker-certs
+docker_photon_bip: 10.195.0.1
