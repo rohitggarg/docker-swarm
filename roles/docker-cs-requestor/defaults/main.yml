@@ -1,1 +1,4 @@
 docker_connect_certs_path: /root/.docker
+docker_remote_cert_list:
+  - server
+  - client

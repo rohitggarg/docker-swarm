@@ -3,8 +3,6 @@
     path: "{{ docker_connect_certs_path }}"
     state: directory
 
-- name: generate csr on server
-  command: "openssl req -subj '/CN={{ inventory_hostname }}' -sha256 -new -newkey rsa:4096 -keyout {{ docker_connect_certs_path }}/server-key.pem -nodes -out {{ docker_connect_certs_path }}/server.csr"
-
-- name: generate local client csr on server
-  command: "openssl req -subj '/CN=localhost' -sha256 -new -newkey rsa:4096 -keyout {{ docker_connect_certs_path }}/key.pem -nodes -out {{ docker_connect_certs_path }}/client.csr"
+- name: generate {{ item }} csr on {{ inventory_hostname }}
+  command: "openssl req -subj '/CN={{ (item == 'client') | ternary('localhost', inventory_hostname) }}' -sha256 -new -newkey rsa:4096 -keyout {{ docker_connect_certs_path }}/{{ (item == 'client') | ternary('', 'server-') }}key.pem -nodes -out {{ docker_connect_certs_path }}/{{ item }}.csr"
+  with_items: "{{ docker_remote_cert_list }}"

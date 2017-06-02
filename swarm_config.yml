@@ -1,14 +1,27 @@
 ---
-# - hosts: localhost
-  # vars:
-    # vagrant_mc_name: foo
-    # ansible_sudo_pass: q
-- hosts: bootstrap
+- hosts: "{{ docker_ca_host }}"
+  vars:
+    vagrant_mc_name: "{{ docker_ca_host }}"
+    ansible_sudo_pass: q
   roles:
     - role: docker-ca
       when: docker_connect_secure
       vars:
         docker_connection_list: "{{ docker_base_connection_list | union(groups['bootstrap']) | union(groups['masters']) }}"
+
+- hosts: localhost
+  vars:
+    vagrant_mc_name: "{{ docker_ca_host }}"
+    ansible_sudo_pass: q
+    docker_connect_certs_path: /docker-certs
+    docker_remote_cert_list:
+      - client
+    docker_remote_copy_cert: no
+  roles:
+    - role: docker-cs-requestor
+      when: docker_connect_secure
+    - role: docker-remote-cert-holder
+      when: docker_connect_secure
 
 - hosts: all
   roles:
@@ -25,8 +38,6 @@
     - role: docker-cs-requestor
       when: docker_connect_secure
     - role: docker-remote-cert-holder
-      vars:
-        docker_ca_host: "{{ groups['bootstrap'][0] }}" # or localhost
       when: docker_connect_secure
     - role: docker-remote-connectable
 
