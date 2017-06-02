@@ -10,4 +10,5 @@ docker_ca_state: Haryana
 docker_ca_locality: GGN
 docker_ca_org: Home
 docker_ca_cn: Rohit Garg
-docker_ca_host: "localhost"
+docker_ca_host: "{{ groups['bootstrap'][0] }}"
+docker_ca_group: bootstrap

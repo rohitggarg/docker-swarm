@@ -12,7 +12,7 @@
 
 - name: copy csr to {{ docker_ca_host }}
   copy:
-    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}{{ docker_connect_certs_path }}/{{ item }}.csr"
+    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}/{{ docker_connect_certs_path }}/{{ item }}.csr"
     dest: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr"
   with_items: "{{ docker_remote_cert_list }}"
   delegate_to: "{{ docker_ca_host }}"
@@ -40,8 +40,6 @@
   copy:
     src: "{{ docker_ca_certs_path }}/{{ docker_ca_host }}/{{ docker_ca_certs_path }}/ca.pem"
     dest: "{{ docker_connect_certs_path }}/ca.pem"
-  notify: restart docker daemon
-  when: docker_remote_copy_cert
 
 - name: copy certificates
   copy:

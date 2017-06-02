@@ -1,8 +1,8 @@
 ---
-- hosts: "{{ docker_ca_host }}"
+- hosts: "{{ docker_ca_group }}"
   vars:
-    vagrant_mc_name: "{{ docker_ca_host }}"
-    ansible_sudo_pass: q
+    # vagrant_mc_name: "{{ docker_ca_host }}"
+    # ansible_sudo_pass: q
   roles:
     - role: docker-ca
       when: docker_connect_secure
@@ -11,9 +11,9 @@
 
 - hosts: localhost
   vars:
-    vagrant_mc_name: "{{ docker_ca_host }}"
+    vagrant_mc_name: localhost
     ansible_sudo_pass: q
-    docker_connect_certs_path: /docker-certs
+    docker_connect_certs_path: docker-certs
     docker_remote_cert_list:
       - client
     docker_remote_copy_cert: no
