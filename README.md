@@ -67,32 +67,3 @@ from local machine, you can use this command
 docker --tlsverify --tlscacert docker-certs/ca.pem --tlscert docker-certs/localhost/docker-certs/localhost-client-cert.pem --tlskey docker-certs/key.pem -H 192.168.99.20:2376 service ls
 docker --tlsverify --tlscacert docker-certs/ca.pem --tlscert docker-certs/localhost/docker-certs/localhost-client-cert.pem --tlskey docker-certs/key.pem -H 192.168.99.21:2376 service ls
 ```
-
-Secure TLS setup - Old Way
-====
-
-```shell
-./certs.sh
-```
-
-```shell
-./server_certs.sh 192.168.99.20 192.168.99.20
-./server_certs.sh 192.168.99.21 192.168.99.21
-```
-
-enable the values inside swarm_config.yml
-```yml
-    docker_connect_secure: yes
-    docker_connect_certs_path: ./docker-certs
-```
-
-execute ansible command
-```shell
-ansible-playbook -e@vagrant.yml swarm_config.yml
-```
-
-for checking the swarm
-```shell
-docker --tlsverify --tlscacert ./docker-certs/ca.pem --tlscert ./docker-certs/cert.pem --tlskey ./docker-certs/key.pem -H 192.168.99.20:2376 service ls
-docker --tlsverify --tlscacert ./docker-certs/ca.pem --tlscert ./docker-certs/cert.pem --tlskey ./docker-certs/key.pem -H 192.168.99.21:2376 service ls
-```
