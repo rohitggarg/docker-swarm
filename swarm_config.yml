@@ -10,17 +10,6 @@
       vars:
         docker_connection_list: "{{ docker_base_connection_list | union(groups['bootstrap']) | union(groups['masters']) }}"
 
-- hosts: 
-    - bootstrap
-    - masters
-  roles:
-    - role: docker-cs-requestor
-      when: docker_connect_secure
-    - role: docker-remote-cert-holder
-      vars:
-        docker_ca_host: "{{ groups['bootstrap'][0] }}" # or localhost
-      when: docker_connect_secure
-
 - hosts: all
   roles:
     - role: docker-photon-config
@@ -33,6 +22,12 @@
     - bootstrap
     - masters
   roles:
+    - role: docker-cs-requestor
+      when: docker_connect_secure
+    - role: docker-remote-cert-holder
+      vars:
+        docker_ca_host: "{{ groups['bootstrap'][0] }}" # or localhost
+      when: docker_connect_secure
     - role: docker-remote-connectable
 
 - hosts: all
