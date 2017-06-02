@@ -2,50 +2,38 @@
   fetch:
     src: "{{ docker_connect_certs_path }}/{{ item }}.csr"
     dest: "{{ docker_ca_certs_path }}/"
-  with_items:
-    - client
-    - server
+  with_items: "{{ docker_remote_cert_list }}"
 
 - name: remove csr from remote
   file:
     path: "{{ docker_connect_certs_path }}/{{ item }}.csr"
     state: absent
-  with_items:
-    - client
-    - server
+  with_items: "{{ docker_remote_cert_list }}"
 
 - name: copy csr to {{ docker_ca_host }}
   copy:
     src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}{{ docker_connect_certs_path }}/{{ item }}.csr"
     dest: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr"
-  with_items:
-    - client
-    - server
+  with_items: "{{ docker_remote_cert_list }}"
   delegate_to: "{{ docker_ca_host }}"
 
 - name: sign csr with CA key
   command: "openssl x509 -req -days 365 -sha256 -in {{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr -CA {{ docker_ca_certs_path }}/ca.pem -CAkey {{ docker_ca_certs_path }}/ca-key.pem -CAcreateserial -out {{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}-cert.pem -extfile {{ docker_ca_certs_path }}/{{ item }}_extfile.cnf"
-  with_items:
-    - client
-    - server
+  with_items: "{{ docker_remote_cert_list }}"
   delegate_to: "{{ docker_ca_host }}"
 
 - name: remove csr file from {{ docker_ca_host }}
   file: 
     path: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr" 
     state: absent
-  with_items:
-    - client
-    - server
+  with_items: "{{ docker_remote_cert_list }}"
   delegate_to: "{{ docker_ca_host }}"
 
 - name: fetch certificates from {{ docker_ca_host }}
   fetch:
     src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}-cert.pem"
     dest: "{{ docker_ca_certs_path }}/"
-  with_items:
-    - server
-    - client
+  with_items: "{{ docker_remote_cert_list }}"
   delegate_to: "{{ docker_ca_host }}"
 
 - name: copy ca to server
@@ -53,15 +41,12 @@
     src: "{{ docker_ca_certs_path }}/{{ docker_ca_host }}/{{ docker_ca_certs_path }}/ca.pem"
     dest: "{{ docker_connect_certs_path }}/ca.pem"
   notify: restart docker daemon
+  when: docker_remote_copy_cert
 
-- name: copy server certificate
+- name: copy certificates
   copy:
-    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}/{{ docker_ca_certs_path }}/{{ inventory_hostname }}-server-cert.pem"
-    dest: "{{ docker_connect_certs_path }}/server-cert.pem"
+    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}/{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}-cert.pem"
+    dest: "{{ docker_connect_certs_path }}/{{ (item == 'server') | ternary('server-', '') }}cert.pem"
+  with_items: "{{ docker_remote_cert_list }}"
   notify: restart docker daemon
-
-- name: copy client certificate
-  copy:
-    src: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}/{{ docker_ca_certs_path }}/{{ inventory_hostname }}-client-cert.pem"
-    dest: "{{ docker_connect_certs_path }}/cert.pem"
-  notify: restart docker daemon
+  when: docker_remote_copy_cert

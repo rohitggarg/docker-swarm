@@ -1,3 +1,7 @@
 docker_connect_certs_path: /root/.docker
 docker_ca_certs_path: docker-certs
 docker_ca_host: localhost
+docker_remote_cert_list:
+  - server
+  - client
+docker_remote_copy_cert: yes

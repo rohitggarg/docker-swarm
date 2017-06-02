@@ -1,12 +1,4 @@
 ---
-- hosts: all
-  roles:
-    - role: docker-photon-config
-      when: ansible_lsb.codename == 'Photon'
-  post_tasks:
-    - name: ensure docker daemon started
-      systemd: state=started name=docker
-
 # - hosts: localhost
   # vars:
     # vagrant_mc_name: foo
@@ -28,6 +20,19 @@
       vars:
         docker_ca_host: "{{ groups['bootstrap'][0] }}" # or localhost
       when: docker_connect_secure
+
+- hosts: all
+  roles:
+    - role: docker-photon-config
+      when: ansible_lsb.codename == 'Photon'
+  post_tasks:
+    - name: ensure docker daemon started
+      systemd: state=started name=docker
+
+- hosts:
+    - bootstrap
+    - masters
+  roles:
     - role: docker-remote-connectable
 
 - hosts: all
