@@ -30,7 +30,7 @@
     - server
   delegate_to: "{{ docker_ca_host }}"
 
-- name: remove csr file
+- name: remove csr file from {{ docker_ca_host }}
   file: 
     path: "{{ docker_ca_certs_path }}/{{ inventory_hostname }}-{{ item }}.csr" 
     state: absent

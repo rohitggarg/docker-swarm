@@ -1,2 +1,7 @@
 docker_ca_certs_path: docker-certs
 docker_photon_bip: 10.195.0.1
+docker_base_connection_list: 
+  - "{{ docker_photon_bip }}"
+  - "127.0.0.1"
+  - localhost
+docker_connection_list: "{{ docker_base_connection_list }}"
