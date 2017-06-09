@@ -74,3 +74,9 @@
       vars:
         swarm_token: "{{ hostvars[groups['bootstrap'][0]][token_key] }}"
         swarm_master: "{{ hostvars[groups['bootstrap'][0]]['ansible_ipv4']['address'] }}"
+
+- hosts: all
+  tasks:
+    - name: label the nodes with group name
+      command: "docker node update --label-add type={{ group_names[0] }} {{ inventory_hostname_short }}"
+      delegate_to: "{{ groups['bootstrap'][0] }}"
