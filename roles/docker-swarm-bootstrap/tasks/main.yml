@@ -10,3 +10,24 @@
     - worker
     - manager
   register: tokens
+- name: iptables rule for portainer
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "9000"
+    comment: portainer traffic
+
+- name: iptables rule for services
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    jump: ACCEPT
+    destination_port: "{{ item }}"
+    comment: enabled "{{ item }} for traffic"
+  with_items:
+    - "10000"
+    - "10001"
+    - "10002"
+    - "10003"
+    - "10004"

@@ -3,12 +3,27 @@
 - name: set netmask fact
   set_fact:
     network: "{{ ansible_ipv4.network }}/{{ ansible_ipv4.netmask }}"
+- name: Add scope for multiple lines in 2.0 photon os
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    line: "ExecStart=/usr/bin/dockerd \\"
+    regexp: "ExecStart=/usr/bin/dockerd"
+  notify: 
+    - restart docker daemon
+- name: Add scope for multiple lines in 1.0 photon os
+  lineinfile:
+    dest: /usr/lib/systemd/system/docker.service
+    line: "          --containerd /run/containerd.sock \\"
+    regexp: "          --containerd /run/containerd.sock"
+    backrefs: yes
+  notify: 
+    - restart docker daemon
 - name: change bip configuration
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
-    line: "         --bip={{ docker_photon_bip }}/23 \\"
+    line: "         --bip={{ docker_photon_bip }}/23"
     regexp: "--bip="
-    insertafter: ExecStart
+    insertbefore: ExecReload
   notify: 
     - restart docker daemon
 - name: set hostname of the machine
@@ -45,11 +60,3 @@
     source: "{{ network | ipaddr('net') }}"
     destination_port: "4789"
     comment: Swarm overlay network traffic
-
-- name: iptables rule for portainer
-  iptables:
-    chain: INPUT
-    protocol: tcp
-    jump: ACCEPT
-    destination_port: "9000"
-    comment: portainer traffic
