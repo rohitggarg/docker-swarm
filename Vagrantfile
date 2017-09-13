@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-
+  # config.vm.box = "silverhighway/photon"
   config.vm.box = "vmware/photon"
   config.vm.define :bootstrap do |machine|
     machine.vm.network "private_network", ip: "192.168.99.20"
