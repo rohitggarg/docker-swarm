@@ -1,3 +1,12 @@
+### Plugin Download on Bootstrap
+```shell
+curl -o docker-swarm-elastic-agents-1.1.4.jar https://github.com/gocd-contrib/docker-swarm-elastic-agents/releases/download/v1.1.4/docker-swarm-elastic-agents-1.1.4.jar -L
+chown 1000:1000 docker-swarm-elastic-agents-1.1.4.jar
+mv docker-swarm-elastic-agents-1.1.4.jar /var/lib/docker/volumes/godata/_data/plugins/external/
+docker service rm gocd-server
+sh create_gocd_server.sh
+```
+
 ### Plugin Configuration
 
 * URL: https://bootstrap:10001/go
