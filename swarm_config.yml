@@ -1,8 +1,9 @@
 ---
 - hosts: "{{ docker_ca_group }}"
+  become: yes
   vars:
-    # vagrant_mc_name: "{{ docker_ca_host }}"
-    # ansible_sudo_pass: q
+    vagrant_mc_name: "{{ docker_ca_host }}"
+    ansible_sudo_pass: q
   roles:
     - role: docker-ca
       when: docker_connect_secure
@@ -23,10 +24,12 @@
     - role: docker-remote-cert-holder
       when: docker_connect_secure
 
-- hosts: all
+- hosts:
+    - bootstrap
+    - masters
+  become: yes
   roles:
-    - role: docker-photon-config
-      when: ansible_lsb.codename == 'Photon'
+    - role: docker-config
   post_tasks:
     - name: ensure docker daemon started
       systemd: state=started name=docker
@@ -34,6 +37,8 @@
 - hosts:
     - bootstrap
     - masters
+    - nodes
+  become: yes
   roles:
     - role: docker-cs-requestor
       when: docker_connect_secure
@@ -41,7 +46,11 @@
       when: docker_connect_secure
     - role: docker-remote-connectable
 
-- hosts: all
+- hosts:
+    - bootstrap
+    - masters
+    - nodes
+  become: yes
   tasks:
     - name: fetch id of docker_gwbridge
       command: docker network ls -f name=docker_gwbridge -q
@@ -52,6 +61,7 @@
       when: bridge_details.stdout == ''
 
 - hosts: bootstrap
+  become: yes
   roles:
     - role: docker-swarm-bootstrap
       register: tokens
@@ -64,6 +74,7 @@
 - hosts: 
     - masters
     - nodes
+  become: yes
   vars:
     token_mapping:
       masters: manager
@@ -75,7 +86,11 @@
         swarm_token: "{{ hostvars[groups['bootstrap'][0]][token_key] }}"
         swarm_master: "{{ hostvars[groups['bootstrap'][0]]['ansible_ipv4']['address'] }}"
 
-- hosts: all
+- hosts:
+    - bootstrap
+    - masters
+    - nodes
+  become: yes
   tasks:
     - name: label the nodes with group name
       command: "docker node update --label-add type={{ group_names[0] }} {{ inventory_hostname_short }}"

@@ -5,7 +5,7 @@
     jump: ACCEPT
     destination_port: "2376"
     comment: connection port for docker
-  items:
+  with_items:
     - tcp
 
 - name: add remote connect configuration
@@ -24,7 +24,7 @@
     regexp: DOCKER_HOST
     create: yes
   with_items:
-    - /etc/environment
+    - /etc/profile
     - ~/.bashrc
 
 - name: add setting for tls verify to shell
@@ -34,5 +34,15 @@
     regexp: DOCKER_TLS_VERIFY
     create: yes
   with_items:
-    - /etc/environment
+    - /etc/profile
+    - ~/.bashrc
+
+- name: add setting for certs path to shell
+  lineinfile:
+    dest: "{{ item }}"
+    line: "export DOCKER_CERT_PATH={{docker_connect_certs_path}}"
+    regexp: DOCKER_CERT_PATH
+    create: yes
+  with_items:
+    - /etc/profile
     - ~/.bashrc

@@ -1,16 +1,14 @@
-- name: update docker
-  command: 'tdnf upgrade -y docker'
 - name: set netmask fact
   set_fact:
     network: "{{ ansible_ipv4.network }}/{{ ansible_ipv4.netmask }}"
-- name: Add scope for multiple lines in 2.0 photon os
+- name: Add scope for multiple lines
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
     line: "ExecStart=/usr/bin/dockerd \\"
     regexp: "ExecStart=/usr/bin/dockerd"
   notify: 
     - restart docker daemon
-- name: Add scope for multiple lines in 1.0 photon os
+- name: Add scope for multiple lines
   lineinfile:
     dest: /usr/lib/systemd/system/docker.service
     line: "          --containerd /run/containerd.sock \\"
@@ -49,7 +47,7 @@
     source: "{{ network | ipaddr('net') }}"
     destination_port: "7946"
     comment: Swarm communication among nodes and masters
-  items:
+  with_items:
     - tcp
     - udp
 - name: iptables rule for swarm connection overlay traffic
