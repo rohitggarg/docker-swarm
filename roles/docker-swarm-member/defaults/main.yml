@@ -2,3 +2,4 @@ swarm_token: some_token
 swarm_master: 127.0.0.1
 swarm_port: 2377
 swarm_leave: no
+ansible_ipv4: "{{ ansible_default_ipv4 }}"

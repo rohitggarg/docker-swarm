@@ -9,4 +9,4 @@
   debug: msg="{{ swarm_state.stdout }}"
 - name: join swarm
   command: "docker swarm join --token {{ swarm_token }} {{ swarm_master }}:{{ swarm_port }}"
-  when: "swarm_state.stdout.find('Swarm: active') == -1"
+  when: swarm_state is match('.*inactive')

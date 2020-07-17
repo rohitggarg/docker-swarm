@@ -93,5 +93,5 @@
   become: yes
   tasks:
     - name: label the nodes with group name
-      command: "docker node update --label-add type={{ group_names[0] }} {{ inventory_hostname_short }}"
+      command: "docker node update --label-add type={{ group_names[0] }} {{ ansible_hostname }}"
       delegate_to: "{{ groups['bootstrap'][0] }}"

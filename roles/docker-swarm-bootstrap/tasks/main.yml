@@ -3,7 +3,7 @@
   register: swarm_state
 - name: init swarm mode on {{ ansible_ipv4.address }}:{{ swarm_port }}
   command: "docker swarm init --advertise-addr {{ ansible_ipv4.address }}:{{ swarm_port }} --listen-addr {{ ansible_ipv4.address }}:{{ swarm_port }}"
-  when: "swarm_state.stdout == 'Swarm: inactive'"
+  when: swarm_state.stdout is match('.*inactive')
 - name: get join tokens
   command: "docker swarm join-token {{ item }} -q"
   with_items:
